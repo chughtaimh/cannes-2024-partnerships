@@ -48,4 +48,22 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+// Increment views of a company by ID
+router.post('/:id/views', (req, res) => {
+    const { id } = req.params;
+    db.run('UPDATE companies SET views = views + 1 WHERE cid = ?', [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Company views incremented successfully' });
+    });
+});
+
+// Increment likes of a company by ID
+router.post('/:id/likes', (req, res) => {
+    const { id } = req.params;
+    db.run('UPDATE companies SET likes = likes + 1 WHERE cid = ?', [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Company likes incremented successfully' });
+    });
+});
+
 module.exports = router;
