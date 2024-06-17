@@ -3,6 +3,7 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const db = require('../database');
 
+// Get all companies or a specific company by ID
 router.get('/:id?', (req, res) => {
     const { id } = req.params;
     if (id) {
@@ -18,12 +19,32 @@ router.get('/:id?', (req, res) => {
     }
 });
 
+// Create a new company
 router.post('/', (req, res) => {
     const { name } = req.body;
     const cid = uuidv4();
     db.run('INSERT INTO companies (cid, name, views, likes) VALUES (?, ?, 0, 0)', [cid, name], function(err) {
         if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ cid, name, views: 0, likes: 0 });
+    });
+});
+
+// Update an existing company by ID
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const { name, views, likes } = req.body;
+    db.run('UPDATE companies SET name = ?, views = ?, likes = ? WHERE cid = ?', [name, views, likes, id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Company updated successfully' });
+    });
+});
+
+// Delete a company by ID
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    db.run('DELETE FROM companies WHERE cid = ?', [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Company deleted successfully' });
     });
 });
 
