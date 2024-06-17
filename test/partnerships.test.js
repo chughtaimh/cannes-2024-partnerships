@@ -1,7 +1,7 @@
-const request = require('supertest');
-const { expect } = require('chai');
-const app = require('../src/app');
-const db = require('../src/database');
+import { expect } from 'chai';
+import request from 'supertest';
+import app from '../src/app.js';
+import db from '../src/database.js';
 
 describe('Partnerships API', () => {
     let partnershipId;

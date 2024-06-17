@@ -4,7 +4,7 @@
   "description": "A simple app for finding and exploring partnerships announced at Cannes 2024.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --exit"
   },
   "keywords": [],
   "author": "",
