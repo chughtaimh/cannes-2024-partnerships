@@ -8,6 +8,7 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS companies (
         cid TEXT PRIMARY KEY,
         name TEXT,
+        logo TEXT,
         views INTEGER DEFAULT 0,
         likes INTEGER DEFAULT 0
     )`);
@@ -19,6 +20,8 @@ db.serialize(() => {
         title TEXT,
         desc TEXT,
         link TEXT,
+        image TEXT,
+        tags TEXT,
         views INTEGER DEFAULT 0,
         likes INTEGER DEFAULT 0,
         FOREIGN KEY (company_one) REFERENCES companies (cid),
