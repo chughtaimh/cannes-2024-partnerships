@@ -1,9 +1,12 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import dotenv from 'dotenv';
 import db from './database.js';
 import companiesRouter from './routes/companies.js';
 import partnershipsRouter from './routes/partnerships.js';
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,8 +28,8 @@ app.get('/', (req, res) => {
 });
 
 if (process.env.NODE_ENV !== 'test') {
-    app.listen(3000, () => {
-        console.log('Server is running on port 3000');
+    app.listen(process.env.PORT || 3000, () => {
+        console.log(`Server is running on port ${process.env.PORT || 3000}`);
     });
 }
 
