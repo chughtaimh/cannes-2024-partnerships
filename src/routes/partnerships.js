@@ -42,10 +42,55 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
     const { id } = req.params;
     const { company_one, company_two, title, desc, link, image, tags, views, likes } = req.body;
-    db.run('UPDATE partnerships SET company_one = ?, company_two = ?, title = ?, desc = ?, link = ?, image = ?, tags = ?, views = ?, likes = ? WHERE pid = ?', 
-           [company_one, company_two, title, desc, link, image, tags, views, likes, id], function(err) {
+
+    // Fetch current partnership details
+    db.get('SELECT * FROM partnerships WHERE pid = ?', [id], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.status(200).json({ message: 'Partnership updated successfully' });
+        if (!row) return res.status(404).json({ error: 'Partnership not found' });
+
+        // Merge existing data with new data
+        const updatedPartnership = {
+            company_one: company_one !== undefined ? company_one : row.company_one,
+            company_two: company_two !== undefined ? company_two : row.company_two,
+            title: title !== undefined ? title : row.title,
+            desc: desc !== undefined ? desc : row.desc,
+            link: link !== undefined ? link : row.link,
+            image: image !== undefined ? image : row.image,
+            tags: tags !== undefined ? tags : row.tags,
+            views: views !== undefined ? views : row.views,
+            likes: likes !== undefined ? likes : row.likes
+        };
+
+        // Perform the update
+        db.run(
+            `UPDATE partnerships SET 
+                company_one = ?, 
+                company_two = ?, 
+                title = ?, 
+                desc = ?, 
+                link = ?, 
+                image = ?, 
+                tags = ?, 
+                views = ?, 
+                likes = ? 
+            WHERE pid = ?`,
+            [
+                updatedPartnership.company_one,
+                updatedPartnership.company_two,
+                updatedPartnership.title,
+                updatedPartnership.desc,
+                updatedPartnership.link,
+                updatedPartnership.image,
+                updatedPartnership.tags,
+                updatedPartnership.views,
+                updatedPartnership.likes,
+                id
+            ],
+            function(err) {
+                if (err) return res.status(500).json({ error: err.message });
+                res.status(200).json({ message: 'Partnership updated successfully' });
+            }
+        );
     });
 });
 
