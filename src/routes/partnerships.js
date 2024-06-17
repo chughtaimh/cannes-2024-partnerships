@@ -7,18 +7,25 @@ const router = express.Router();
 // Get all partnerships or a specific partnership by ID
 router.get('/:id?', (req, res) => {
     const { id } = req.params;
+    const { tags } = req.query;
+
+    let sql = 'SELECT * FROM partnerships';
+    let params = [];
+
     if (id) {
-        db.get('SELECT * FROM partnerships WHERE pid = ?', [id], (err, row) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json(row);
-        });
-    } else {
-        db.all('SELECT * FROM partnerships', [], (err, rows) => {
-            if (err) return res.status(500).json({ error: err.message });
-            res.json(rows);
-        });
+        sql += ' WHERE pid = ?';
+        params.push(id);
+    } else if (tags) {
+        sql += ' WHERE tags LIKE ?';
+        params.push(`%${tags}%`);
     }
+
+    db.all(sql, params, (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
 });
+
 
 // Create a new partnership
 router.post('/', (req, res) => {

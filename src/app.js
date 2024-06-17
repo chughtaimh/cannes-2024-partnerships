@@ -12,13 +12,16 @@ const app = express();
 app.use(express.json());
 
 // Serve static files from the 'public' directory
-app.use(express.static('./public'));
+app.use(express.static('./src/public'));
+
+// Serve images from the 'src/images' directory
+app.use('/images', express.static('./src/images'));
 
 app.use('/company', companiesRouter);
 app.use('/partnership', partnershipsRouter);
 
 app.get('/', (req, res) => {
-    res.sendFile('./public/index.html', { root: __dirname });
+    res.sendFile('./src/public/index.html', { root: __dirname });
 });
 
 if (process.env.NODE_ENV !== 'test') {

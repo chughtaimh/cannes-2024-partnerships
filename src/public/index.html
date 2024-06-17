@@ -1,152 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-	    <meta charset="UTF-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	    <title>Cannes 2024 Partnership Tracker</title>
-	    <script src="https://cdn.tailwindcss.com"></script>
-	    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-	    <style>
-	        body {
-	            font-family: 'Roboto', sans-serif;
-	        }
-	        .header {
-	            border-bottom: 1px solid #e5e7eb;
-	        }
-	        .tab-active {
-	            border-bottom: 2px solid #000;
-	        }
-	        .partnership-card {
-	            border: 1px solid #e5e7eb;
-	            border-radius: 8px;
-	            padding: 16px;
-	            background-color: #fff;
-	            min-width: 150px;
-	            min-height: 200px;
-	            max-height: 225px; /* Adjust this value as needed */
-	        }
-	        .submit-button {
-	            background-color: #ff0000;
-	            color: #fff;
-	            padding: 12px 24px;
-	            border-radius: 8px;
-	            font-weight: bold;
-	            text-align: center;
-	            cursor: pointer;
-	        }
-	        .grid {
-	            max-height: 500px; /* Adjust this value as needed */
-	            overflow-y-scroll;
-	        }
-	        .min-h-screen {
-	            min-height: 100vh;
-	        }
-	        .flex-grow {
-	            flex-grow: 1;
-	        }
-	        .overflow-auto {
-	            overflow: auto;
-	        }
-			.text-xs {
-			    font-size: 10px;
-			    font-weight: bold;
-	            height: 75px;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannes 2024 Partnership Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .header {
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .tab-active {
+            border-bottom: 2px solid #000;
+        }
+        .partnership-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            background-color: #fff;
+            min-width: 150px;
+            min-height: 200px;
+            max-height: 225px; /* Adjust this value as needed */
+        }
+        .submit-button {
+            background-color: #ff0000;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+        }
+        .grid {
+            max-height: 500px; /* Adjust this value as needed */
+            overflow-y-scroll;
+        }
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        .flex-grow {
+            flex-grow: 1;
+        }
+        .overflow-auto {
+            overflow: auto;
+        }
+        .text-xs {
+            font-size: 10px;
+            font-weight: bold;
+            height: 75px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto p-4 flex flex-col min-h-screen">
+        <header class="header flex items-center justify-between py-4">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-gray-300 rounded-full mr-4">
+                    <img src="/images/logo.jpeg" alt="Partnership Image" class="w-full h-full object-cover rounded-full">
+                </div>
+                <h1 class="text-2xl font-bold">Cannes 2024 Partnership Tracker</h1>
+            </div>
+        </header>
+        <div class="mt-4 flex-grow">
+            <div class="relative">
+                <input type="text" placeholder="Search Partnerships..." class="w-full p-3 border border-gray-300 rounded-lg">
+                <span class="absolute right-3 top-3 text-gray-500">🔎</span>
+            </div>
+            <div class="mt-4 flex space-x-4">
+                <button class="tab-active px-4 py-2" onclick="filterPartnerships('Advanced TV')">Advanced TV</button>
+                <button class="px-4 py-2" onclick="filterPartnerships('Commerce')">Commerce</button>
+                <button class="px-4 py-2" onclick="filterPartnerships('Other')">All</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4 overflow-y-scroll" id="partnership-container">
+                <!-- Partnership cards will be inserted here -->
+            </div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                fetchPartnerships();
+            });
+
+            function fetchPartnerships() {
+                fetch('/partnership')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        displayPartnerships(data);
+                    })
+                    .catch(e => {
+                        console.error('An error occurred while fetching the partnerships data:', e);
+                    });
+            }
+
+            function displayPartnerships(partnerships) {
+                const container = document.getElementById('partnership-container');
+                container.innerHTML = '';
+                partnerships.forEach(partnership => {
+                    const card = document.createElement('div');
+                    card.className = 'partnership-card';
+                    card.innerHTML = `
+                        <div class="w-16 h-16 mb-4">
+                            <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <p class="text-xs font-bold">${partnership.title}</p>
+                        <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+			function filterPartnerships(category) {
+			    const buttons = document.querySelectorAll('button');
+			    buttons.forEach(button => {
+			        if (button.textContent === category) {
+			            button.classList.add('tab-active');
+			        } else {
+			            button.classList.remove('tab-active');
+			        }
+			    });
+
+			    let query = '';
+			    if (category === 'Advanced TV') {
+			        query = '?tags=tv';
+			    } else if (category === 'Commerce') {
+			        query = '?tags=commerce';
+			    }
+
+			    fetch(`/partnership${query}`)
+			        .then(response => {
+			            if (!response.ok) {
+			                throw new Error(`HTTP error! status: ${response.status}`);
+			            }
+			            return response.json();
+			        })
+			        .then(data => {
+			            displayPartnerships(data);
+			        })
+			        .catch(e => {
+			            console.error('An error occurred while fetching the partnerships data:', e);
+			        });
 			}
-	    </style>
-	</head>
 
-	<body class="bg-gray-100">
-    	<div class="max-w-4xl mx-auto p-4 flex flex-col min-h-screen">
+        </script>
+        <div class="mt-8 text-center">
+            <div class="submit-button" onclick="showForm()">SUBMIT NEW PARTNERSHIP</div>
+        </div>
+        <footer class="mt-8 text-center text-gray-600">
+            <p>Cannes 2024 Partnership Tracker (c)</p>
+            <div class="flex justify-center space-x-4 mt-2">
+                <a href="#" class="text-blue-500">Privacy</a>
+                <a href="#" class="text-blue-500">About</a>
+                <a href="#" class="text-blue-500">Contact</a>
+            </div>
+        </footer>
+    </div>
 
-		    <!-- Your body content here -->
-
-	        <header class="header flex items-center justify-between py-4">
-	            <div class="flex items-center">
-	                <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
-	                <h1 class="text-2xl font-bold">Cannes 2024 Partnership Tracker</h1>
-	            </div>
-	        </header>
-
-		    <!--  -->
-	        <div class="mt-4 flex-grow">
-	            <div class="relative">
-	                <input type="text" placeholder="Search Partnerships..." class="w-full p-3 border border-gray-300 rounded-lg">
-	                <span class="absolute right-3 top-3 text-gray-500">🔎</span>
-	            </div>
-	            <div class="mt-4 flex space-x-4">
-	                <button class="tab-active px-4 py-2">Advanced TV</button>
-	                <button class="px-4 py-2">Commerce</button>
-	                <button class="px-4 py-2">Other</button>
-	            </div>
-			    <div class="grid grid-cols-2 gap-4 overflow-y-scroll" id="partnership-container">
-			        <!-- Partnership cards will be inserted here -->
-			    </div>
-			</div>
-		    <script>
-		        // Fetch partnerships data from the server
-		        fetch('/partnership')
-		            .then(response => {
-		                if (!response.ok) {
-		                    throw new Error(`HTTP error! status: ${response.status}`);
-		                }
-		                return response.json();
-		            })
-		            .then(data => {
-		                // Get the container for the partnership cards
-		                const container = document.getElementById('partnership-container');
-
-		                // Loop through the data and create a card for each partnership
-		                data.forEach(partnership => {
-		                    // Create a new div element for the card
-		                    const card = document.createElement('div');
-		                    card.className = 'partnership-card';
-
-		                    // Fill the card with the partnership data
-		                    card.innerHTML = `
-		                        <div class="w-16 h-16 bg-gray-300 rounded-full mb-4"></div>
-		                        <p class="text-xs font-bold">${partnership.title}</p>
-		                        <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
-		                    `;
-
-		                    // Add the card to the container
-		                    container.appendChild(card);
-		                });
-		            })
-		            .catch(e => {
-		                console.error('An error occurred while fetching the partnerships data:', e);
-		            });
-		    </script>
-	        <div class="mt-8 text-center">
-	            <div class="submit-button">SUBMIT NEW PARTNERSHIP</div>
-	        </div>
-	        <footer class="mt-8 text-center text-gray-600">
-	            <p>Cannes 2024 Partnership Tracker (c)</p>
-	            <div class="flex justify-center space-x-4 mt-2">
-	                <a href="#" class="text-blue-500">Privacy</a>
-	                <a href="#" class="text-blue-500">About</a>
-	                <a href="#" class="text-blue-500">Contact</a>
-	            </div>
-	        </footer>
-	    </div>
-	</body>
+    <script>
+        function showForm() {
+            // Implement form display logic here
+        }
+    </script>
+</body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
