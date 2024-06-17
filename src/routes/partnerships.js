@@ -50,4 +50,22 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+// Increment views of a partnership by ID
+router.post('/:id/views', (req, res) => {
+    const { id } = req.params;
+    db.run('UPDATE partnerships SET views = views + 1 WHERE pid = ?', [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Partnership views incremented successfully' });
+    });
+});
+
+// Increment likes of a partnership by ID
+router.post('/:id/likes', (req, res) => {
+    const { id } = req.params;
+    db.run('UPDATE partnerships SET likes = likes + 1 WHERE pid = ?', [id], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json({ message: 'Partnership likes incremented successfully' });
+    });
+});
+
 module.exports = router;
