@@ -2,7 +2,7 @@
   "name": "cannes-2024-partnerships",
   "version": "1.0.0",
   "description": "A simple app for finding and exploring partnerships announced at Cannes 2024.",
-  "main": "index.js",
+  "main": "src/app.js",
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
