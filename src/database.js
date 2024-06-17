@@ -1,11 +1,9 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+import sqlite3 from 'sqlite3';
+import path from 'path';
 
-// Connect to SQLite database
-const dbPath = path.resolve(__dirname, '../db/database.db');
+const dbPath = path.resolve('db/database.db');
 const db = new sqlite3.Database(dbPath);
 
-// Initialize database schema
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS companies (
         cid TEXT PRIMARY KEY,
@@ -28,4 +26,4 @@ db.serialize(() => {
     )`);
 });
 
-module.exports = db;
+export default db;

@@ -1,17 +1,18 @@
-const express = require('express');
+import express from 'express';
+import db from './database.js';
+import companiesRouter from './routes/companies.js';
+import partnershipsRouter from './routes/partnerships.js';
+
 const app = express();
-const db = require('./database');
-
 app.use(express.json());
-
-const companiesRouter = require('./routes/companies');
-const partnershipsRouter = require('./routes/partnerships');
 
 app.use('/company', companiesRouter);
 app.use('/partnership', partnershipsRouter);
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(3000, () => {
+        console.log('Server is running on port 3000');
+    });
+}
 
-module.exports = app;
+export default app;

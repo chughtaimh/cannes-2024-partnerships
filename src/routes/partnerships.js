@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import db from '../database.js';
+
 const router = express.Router();
-const { v4: uuidv4 } = require('uuid');
-const db = require('../database');
 
 // Get all partnerships or a specific partnership by ID
 router.get('/:id?', (req, res) => {
@@ -68,4 +69,4 @@ router.post('/:id/likes', (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;
