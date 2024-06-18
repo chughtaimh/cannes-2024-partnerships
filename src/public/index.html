@@ -242,17 +242,20 @@
 		        return !!pattern.test(url);
 		    }
 
-		    // Handle URL submission
-		    function submitURL() {
-		        const url = document.getElementById('partnershipURL').value;
-		        if (!isValidURL(url)) {
-		            document.getElementById('urlError').classList.remove('hidden');
-		            return;
-		        }
+			// Handle URL submission
+			function submitURL() {
+			    const url = document.getElementById('partnershipURL').value;
+			    if (!isValidURL(url)) {
+			        document.getElementById('urlError').classList.remove('hidden');
+			        return;
+			    }
 
-		        // Proceed to the next step (fetching article details and sending to backend)
-		        fetchArticleDetails(url);
-		    }
+			    // Show loading image
+			    document.getElementById('popupModal').innerHTML += '<img src="images/loading.gif" alt="Loading...">';
+
+			    // Proceed to the next step (fetching article details and sending to backend)
+			    fetchArticleDetails(url);
+			}
 
 		    // Fetch article details from backend
 		    async function fetchArticleDetails(url) {
@@ -284,18 +287,18 @@
 		        // Clear existing popup content and display the proposal
 		        const popupContent = document.getElementById('popupModal');
 		        popupContent.innerHTML = `
-    		<div class="bg-white p-8 rounded-lg w-full max-w-lg min-w-xs" style="max-width: 500px;">
+	    		<div class="bg-white p-8 rounded-lg w-full max-w-lg min-w-xs" style="max-width: 500px;">
 
-	            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
-	            <p><strong>Title:</strong> ${proposal.title}</p>
-	            <p><strong>Description:</strong> ${proposal.desc}</p>
-	            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
-	            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
-	            <div class="flex justify-end">
-	                <button onclick="approvePartnership(${JSON.stringify(proposal).replace(/"/g, '&quot;')})" class="submit-button">Approve</button>
-	                <button onclick="disapprovePartnership()" class="ml-4 text-gray-500">Disapprove</button>
-	            </div>
-	        </div>
+		            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
+		            <p><strong>Title:</strong> ${proposal.title}</p>
+		            <p><strong>Description:</strong> ${proposal.desc}</p>
+		            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
+		            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
+		            <div class="flex justify-end">
+		                <button onclick="approvePartnership(${JSON.stringify(proposal).replace(/"/g, '&quot;')})" class="submit-button">Approve</button>
+		                <button onclick="disapprovePartnership()" class="ml-4 text-gray-500">Disapprove</button>
+		            </div>
+		        </div>
 		        `;
 		    }
 		    // Disapprove partnership
