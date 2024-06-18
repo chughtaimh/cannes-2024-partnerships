@@ -25,6 +25,12 @@
             min-height: 200px;
             max-height: 225px; /* Adjust this value as needed */
         }
+		.partnership-card img {
+		    width: calc(100% - 32px); /* Full width with some margin */
+		    height: auto; /* Maintain aspect ratio */
+		    margin: 0 16px; /* Margin on each side */
+		    border-radius: 8px; /* Slightly rounded corners, you can adjust this */
+		}
         .submit-button {
             background-color: #ff0000;
             color: #fff;
@@ -107,11 +113,11 @@
 		            const card = document.createElement('div');
 		            card.className = 'partnership-card';
 		            card.innerHTML = `
-		                <div class="w-16 h-16 mb-4">
-		                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full h-full object-cover rounded-full">
-		                </div>
-		                <p class="text-xs font-bold">${partnership.title}</p>
-		                <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
+			            <div class="w-full h-16 mb-4">
+			                <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
+			            </div>
+			            <p class="text-xs font-bold">${partnership.title}</p>
+			            <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
 		            `;
 		            container.appendChild(card);
 		        });
