@@ -292,12 +292,18 @@
             <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
             <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
             <div class="flex justify-end">
-                <button onclick="approvePartnership(${JSON.stringify(proposal)})" class="submit-button">Approve</button>
-                <button onclick="closePopup()" class="ml-4 text-gray-500">Disapprove</button>
+                <button onclick="approvePartnership(${JSON.stringify(proposal).replace(/"/g, '&quot;')})" class="submit-button">Approve</button>
+                <button onclick="disapprovePartnership()" class="ml-4 text-gray-500">Disapprove</button>
             </div>
         </div>
 		        `;
 		    }
+		    // Disapprove partnership
+			function disapprovePartnership() {
+			    closePopup();
+			    location.reload();  // Refresh the page
+			}
+
 
 		    // Approve partnership
 		    async function approvePartnership(proposal) {
