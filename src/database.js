@@ -1,15 +1,28 @@
 import { Sequelize, DataTypes } from 'sequelize';
+import dotenv from 'dotenv';
 
-// Create a new Sequelize instance for PostgreSQL
+// Load environment variables from .env file
+dotenv.config();
+
+// Check if DATABASE_URL is defined
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not defined in the environment variables');
+}
+
+// Determine if SSL should be used based on the environment
+const useSSL = process.env.NODE_ENV === 'production';
+
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   protocol: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false, // Required for Heroku
-    },
-  },
+  dialectOptions: useSSL
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false, // Required for Heroku
+        },
+      }
+    : {},
 });
 
 // Define the Company model
