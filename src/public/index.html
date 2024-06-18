@@ -251,7 +251,11 @@
 			    }
 
 			    // Show loading image
-			    document.getElementById('popupModalInnerDiv').innerHTML += '<img src="images/loading.gif" alt="Loading...">';
+			    document.getElementById('popupModalInnerDiv').innerHTML += `
+			        <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+			            <img src="images/loading.gif" alt="Loading...">
+			        </div>
+			    `;
 
 			    // Proceed to the next step (fetching article details and sending to backend)
 			    fetchArticleDetails(url);
