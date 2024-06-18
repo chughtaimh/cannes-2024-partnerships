@@ -264,6 +264,7 @@
 		                },
 		                body: JSON.stringify({ url }),
 		            });
+		            console.log(response)
 
 		            if (!response.ok) {
 		                throw new Error('Failed to fetch article details');
@@ -271,6 +272,7 @@
 
 		            const articleDetails = await response.json();
 		            displayPartnershipProposal(articleDetails);
+
 		        } catch (error) {
 		            console.error('Error fetching article details:', error);
 		            alert('Failed to fetch article details. Please try again.');
@@ -280,17 +282,20 @@
 		    // Display partnership proposal
 		    function displayPartnershipProposal(proposal) {
 		        // Clear existing popup content and display the proposal
-		        const popupContent = document.getElementById('popupContent');
+		        const popupContent = document.getElementById('popupModal');
 		        popupContent.innerHTML = `
-		            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
-		            <p><strong>Title:</strong> ${proposal.title}</p>
-		            <p><strong>Description:</strong> ${proposal.desc}</p>
-		            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
-		            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
-		            <div class="flex justify-end">
-		                <button onclick="approvePartnership(${JSON.stringify(proposal)})" class="submit-button">Approve</button>
-		                <button onclick="closePopup()" class="ml-4 text-gray-500">Disapprove</button>
-		            </div>
+				    <div class="bg-white p-8 rounded-lg w-1/3">
+
+			            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
+			            <p><strong>Title:</strong> ${proposal.title}</p>
+			            <p><strong>Description:</strong> ${proposal.desc}</p>
+			            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
+			            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
+			            <div class="flex justify-end">
+			                <button onclick="approvePartnership(${JSON.stringify(proposal)})" class="submit-button">Approve</button>
+			                <button onclick="closePopup()" class="ml-4 text-gray-500">Disapprove</button>
+			            </div>
+				    </div>
 		        `;
 		    }
 
@@ -331,12 +336,6 @@
             </div>
         </footer>
     </div>
-
-    <script>
-        function showForm() {
-            // Implement form display logic here
-        }
-    </script>
 </body>
 
 </html>
