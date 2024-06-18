@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use('/companies', companyRoutes);
+app.use('/companies', companyRoutes); 
 app.use('/partnerships', partnershipRoutes);
 
 // Sync all models with the database
