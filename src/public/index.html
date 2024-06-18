@@ -304,30 +304,68 @@
 			    location.reload();  // Refresh the page
 			}
 
+			// Approve partnership
+			async function approvePartnership(proposal) {
+			    try {
+			        // Fetch existing companies
+			        const companiesResponse = await fetch('/companies');
+			        if (!companiesResponse.ok) {
+			            throw new Error('Failed to fetch companies');
+			        }
+			        const companies = await companiesResponse.json();
 
-		    // Approve partnership
-		    async function approvePartnership(proposal) {
-		        try {
-		            const response = await fetch('/partnerships', {
-		                method: 'POST',
-		                headers: {
-		                    'Content-Type': 'application/json',
-		                },
-		                body: JSON.stringify(proposal),
-		            });
+			        // Helper function to get or create company
+			        async function getOrCreateCompany(companyName) {
+			            let company = companies.find(c => c.name === companyName);
+			            if (!company) {
+			                const newCompanyResponse = await fetch('/companies', {
+			                    method: 'POST',
+			                    headers: {
+			                        'Content-Type': 'application/json',
+			                    },
+			                    body: JSON.stringify({ name: companyName, logo: '/images/logo.jpeg' }),
+			                });
+			                if (!newCompanyResponse.ok) {
+			                    throw new Error(`Failed to create company ${companyName}`);
+			                }
+			                company = await newCompanyResponse.json();
+			            }
+			            return company.cid;
+			        }
 
-		            if (!response.ok) {
-		                throw new Error('Failed to submit partnership');
-		            }
+			        // Get or create companies and update proposal
+			        proposal.company_one = await getOrCreateCompany(proposal.company_one);
+			        proposal.company_two = await getOrCreateCompany(proposal.company_two);
 
-		            alert('Partnership submitted successfully');
-		            closePopup();
-		            fetchPartnerships();  // Refresh the page
-		        } catch (error) {
-		            console.error('Error submitting partnership:', error);
-		            alert('Failed to submit partnership. Please try again.');
-		        }
-		    }
+			        // Submit the partnership
+			        const response = await fetch('/partnerships', {
+			            method: 'POST',
+			            headers: {
+			                'Content-Type': 'application/json',
+			            },
+			            body: JSON.stringify(proposal),
+			        });
+
+			        if (!response.ok) {
+			            throw new Error('Failed to submit partnership');
+			        }
+
+			        alert('Partnership submitted successfully');
+			        closePopup();
+			        fetchPartnerships();  // Refresh the page
+			    } catch (error) {
+			        console.error('Error submitting partnership:', error);
+			        alert('Failed to submit partnership. Please try again.');
+			    }
+			}
+
+			// Close the popup
+			function closePopup() {
+			    document.getElementById('popupModal').classList.add('hidden');
+			    document.getElementById('partnershipURL').value = '';
+			    document.getElementById('urlError').classList.add('hidden');
+			}
+
 		</script>
 
         <div class="mt-8 text-center">
