@@ -2,7 +2,6 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Company } from '../database.js';
 
-const Sequelize = require('sequelize');
 const router = express.Router();
 
 // Get all companies or a specific company by ID
