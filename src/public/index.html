@@ -284,18 +284,18 @@
 		        // Clear existing popup content and display the proposal
 		        const popupContent = document.getElementById('popupModal');
 		        popupContent.innerHTML = `
-        <div class="bg-white p-8 rounded-lg w-full">
+	        <div class="bg-white p-8 rounded-lg w-full">
 
-            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
-            <p><strong>Title:</strong> ${proposal.title}</p>
-            <p><strong>Description:</strong> ${proposal.desc}</p>
-            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
-            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
-            <div class="flex justify-end">
-                <button onclick="approvePartnership(${JSON.stringify(proposal).replace(/"/g, '&quot;')})" class="submit-button">Approve</button>
-                <button onclick="disapprovePartnership()" class="ml-4 text-gray-500">Disapprove</button>
-            </div>
-        </div>
+	            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
+	            <p><strong>Title:</strong> ${proposal.title}</p>
+	            <p><strong>Description:</strong> ${proposal.desc}</p>
+	            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
+	            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
+	            <div class="flex justify-end">
+	                <button onclick="approvePartnership(${JSON.stringify(proposal).replace(/"/g, '&quot;')})" class="submit-button">Approve</button>
+	                <button onclick="disapprovePartnership()" class="ml-4 text-gray-500">Disapprove</button>
+	            </div>
+	        </div>
 		        `;
 		    }
 		    // Disapprove partnership
@@ -350,15 +350,17 @@
 			            throw new Error('Failed to submit partnership');
 			        }
 
+			        // Show loading image
+			        document.getElementById('popupModal').innerHTML += '<img src="images/loading.gif" alt="Loading...">';
+
 			        alert('Partnership submitted successfully');
-			        // closePopup();
-			        // console.log("CLOSED POPUP")
 			        location.reload();  // Refresh the page
 			    } catch (error) {
 			        console.error('Error submitting partnership:', error);
 			        alert('Failed to submit partnership. Please try again.');
 			    }
 			}
+
 
 
 		</script>
