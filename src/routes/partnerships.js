@@ -1,5 +1,6 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { Sequelize } from 'sequelize'; // Add this line
 import { Partnership } from '../database.js';
 
 const router = express.Router();
