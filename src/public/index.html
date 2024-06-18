@@ -204,6 +204,152 @@
 		        }
 		    }
 		</script>
+		<!-- POPUP: ADD PARTNERSHIP -->
+		<div id="popupModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
+		    <div class="bg-white p-8 rounded-lg w-1/3">
+		        <h2 class="text-xl font-bold mb-4">Submit New Partnership</h2>
+		        <input type="text" id="partnershipURL" placeholder="Enter partnership URL" class="w-full p-3 border border-gray-300 rounded-lg mb-4">
+		        <div id="urlError" class="text-red-500 hidden">Please enter a valid URL</div>
+		        <div class="flex justify-end">
+		            <button onclick="submitURL()" class="submit-button">Submit</button>
+		            <button onclick="closePopup()" class="ml-4 text-gray-500">Cancel</button>
+		        </div>
+		    </div>
+		</div>
+
+		<!-- SCRIPT FOR HANDLING ADD NEW PARTNERSHIP -->
+		<script>
+		    // Show the popup
+		    function showForm() {
+		        document.getElementById('popupModal').classList.remove('hidden');
+		    }
+
+		    // Close the popup
+		    function closePopup() {
+		        document.getElementById('popupModal').classList.add('hidden');
+		        document.getElementById('partnershipURL').value = '';
+		        document.getElementById('urlError').classList.add('hidden');
+		    }
+
+		    // Validate URL
+		    function isValidURL(url) {
+		        const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+		            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+		            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+		            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+		            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+		            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+		        return !!pattern.test(url);
+		    }
+
+		    // Handle URL submission
+		    function submitURL() {
+		        const url = document.getElementById('partnershipURL').value;
+		        if (!isValidURL(url)) {
+		            document.getElementById('urlError').classList.remove('hidden');
+		            return;
+		        }
+
+		        // Proceed to the next step (fetching article details and sending to OpenAI)
+		        fetchArticleDetails(url);
+		    }
+
+		    // Fetch article details
+		    async function fetchArticleDetails(url) {
+		        try {
+		            const response = await fetch('/fetch-article-details', {
+		                method: 'POST',
+		                headers: {
+		                    'Content-Type': 'application/json',
+		                },
+		                body: JSON.stringify({ url }),
+		            });
+
+		            if (!response.ok) {
+		                throw new Error('Failed to fetch article details');
+		            }
+
+		            const articleDetails = await response.json();
+		            // Proceed to send details to OpenAI
+		            sendToOpenAI(articleDetails);
+		        } catch (error) {
+		            console.error('Error fetching article details:', error);
+		            alert('Failed to fetch article details. Please try again.');
+		        }
+		    }
+
+		    // Send details to OpenAI
+		    async function sendToOpenAI(articleDetails) {
+		        try {
+		            const response = await fetch('https://api.openai.com/v1/engines/gpt-4o/completions', {
+		                method: 'POST',
+		                headers: {
+		                    'Content-Type': 'application/json',
+		                    'Authorization': `Bearer sk-proj-4m7g9cDqTEQ6hczjIOIsT3BlbkFJcDjIoofS1cbMOjjMez35`
+		                },
+		                body: JSON.stringify({
+		                    prompt: `I'm going to submit to you an article about a partnership. Your job is to summarize key parts of this partnership and return them in a json dictionary with the following FORMAT:\n\nFORMAT\n{\n"company_one": Name of first company participating in partnership (usually the lead company),\n"company_two": Name of second company participating in partnership,\n"title": 80 characters or less, summarizing the most important parts of the partnership (focus who is partnering and a brief description of the partnership\n"desc": 250 characters or less, summarizing the most important parts of the partnership (focus on what the partnership actually _does_,\n"image": use IMAGE_URL below,\n"link": use URL below,\n"tags": generate the most relevant tags for this article, no more than 5. If the partnership is related to TV/Video/CTV, include a label for 'tv'; if it is related to retail media or commerce add a label for 'commerce'; otherwise generate relevant tags(Format all lower-case, comma-separated).\n}\n\nTITLE\n${articleDetails.title}\n\nBODY\n${articleDetails.body_text}\n\nURL\n${articleDetails.url}\n\nIMAGE_URL\n${articleDetails.image_url}\n\nNOTE: ensure your response is **ONLY** the json_object. Do not add any other response besides the json_object. Think very carefully about this, step-by-step. Before providing an answer, double-check your work to ensure you're providing a response in the format I want. Do not provide any extra info or text besides the json_object.`,
+		                    max_tokens: 500,
+		                    n: 1,
+		                    stop: null,
+		                    temperature: 0.7
+		                })
+		            });
+
+		            if (!response.ok) {
+		                throw new Error('Failed to send data to OpenAI');
+		            }
+
+		            const openAIResponse = await response.json();
+		            displayPartnershipProposal(openAIResponse);
+		        } catch (error) {
+		            console.error('Error sending data to OpenAI:', error);
+		            alert('Failed to process the partnership data. Please try again.');
+		        }
+		    }
+
+		    // Display partnership proposal
+		    function displayPartnershipProposal(proposal) {
+		        // Clear existing popup content and display the proposal
+		        const popupContent = document.getElementById('popupContent');
+		        popupContent.innerHTML = `
+		            <h2 class="text-xl font-bold mb-4">Review Partnership</h2>
+		            <p><strong>Title:</strong> ${proposal.title}</p>
+		            <p><strong>Description:</strong> ${proposal.desc}</p>
+		            <p><strong>Link:</strong> <a href="${proposal.link}" target="_blank">${proposal.link}</a></p>
+		            <img src="${proposal.image}" alt="Partnership Image" class="w-full h-64 object-cover my-4">
+		            <div class="flex justify-end">
+		                <button onclick="approvePartnership(${JSON.stringify(proposal)})" class="submit-button">Approve</button>
+		                <button onclick="closePopup()" class="ml-4 text-gray-500">Disapprove</button>
+		            </div>
+		        `;
+		    }
+
+		    // Approve partnership
+		    async function approvePartnership(proposal) {
+		        try {
+		            const response = await fetch('/partnerships', {
+		                method: 'POST',
+		                headers: {
+		                    'Content-Type': 'application/json',
+		                },
+		                body: JSON.stringify(proposal),
+		            });
+
+		            if (!response.ok) {
+		                throw new Error('Failed to submit partnership');
+		            }
+
+		            alert('Partnership submitted successfully');
+		            closePopup();
+		            fetchPartnerships();  // Refresh the page
+		        } catch (error) {
+		            console.error('Error submitting partnership:', error);
+		            alert('Failed to submit partnership. Please try again.');
+		        }
+		    }
+		</script>
+
         <div class="mt-8 text-center">
             <div class="submit-button" onclick="showForm()">SUBMIT NEW PARTNERSHIP</div>
         </div>
