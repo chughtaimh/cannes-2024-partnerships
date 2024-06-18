@@ -198,6 +198,18 @@
 			    const matchingPartnerships = partnerships.filter(p => p.desc.toLowerCase().includes(query.toLowerCase()));
 			    dropdown.innerHTML = '';
 
+			    // Add user's query at the top of the list
+			    const queryItem = document.createElement('div');
+			    queryItem.className = 'p-2 hover:bg-gray-100 cursor-pointer font-bold';
+			    queryItem.textContent = query;
+			    queryItem.onclick = () => {
+			        document.getElementById('searchInput').value = query;
+			        displayMatchingPartnerships(query);
+			        dropdown.classList.add('hidden');
+			    };
+			    dropdown.appendChild(queryItem);
+
+			    // Add matching partnerships
 			    if (matchingPartnerships.length > 0) {
 			        matchingPartnerships.forEach(partnership => {
 			            const item = document.createElement('div');
@@ -212,7 +224,27 @@
 			        });
 			        dropdown.classList.remove('hidden');
 			    } else {
-			        dropdown.classList.add('hidden');
+			        dropdown.classList.remove('hidden');
+			    }
+			}
+
+			function displayMatchingPartnerships(query) {
+			    const container = document.getElementById('partnership-container');
+			    container.innerHTML = '';
+			    const matchingPartnerships = partnerships.filter(p => p.desc.toLowerCase().includes(query.toLowerCase()));
+			    if (matchingPartnerships.length > 0) {
+			        matchingPartnerships.forEach(partnership => {
+			            const card = document.createElement('div');
+			            card.className = 'partnership-card';
+			            card.innerHTML = `
+			                <div class="w-full h-16 mb-4">
+			                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
+			                </div>
+			                <p class="text-xs font-bold">${partnership.title}</p>
+			                <a href="${partnership.link}" target="_blank" onclick="incrementLikes('${partnership.pid}')"><button class="mt-4 text-blue-500">Learn more</button></a>
+			            `;
+			            container.appendChild(card);
+			        });
 			    }
 			}
 
