@@ -1,18 +1,26 @@
 import express from 'express';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import dotenv from 'dotenv';
-import db from './database.js';
-import companiesRouter from './routes/companies.js';
-import partnershipsRouter from './routes/partnerships.js';
-
-dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { sequelize } from './database.js';
+import companyRoutes from './routes/companies.js';
+import partnershipRoutes from './routes/partnerships.js';
 
 const app = express();
+const port = process.env.PORT || 3000;
+
 app.use(express.json());
+app.use('/companies', companyRoutes);
+app.use('/partnerships', partnershipRoutes);
+
+// Sync all models with the database
+sequelize.sync()
+  .then(() => {
+    console.log('Database & tables created!');
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Unable to create database:', err);
+  });
 
 // Serve static files from the 'public' directory
 app.use(express.static('./src/public'));
@@ -20,17 +28,8 @@ app.use(express.static('./src/public'));
 // Serve images from the 'src/images' directory
 app.use('/images', express.static('./src/images'));
 
-app.use('/company', companiesRouter);
-app.use('/partnership', partnershipsRouter);
-
 app.get('/', (req, res) => {
     res.sendFile('./src/public/index.html', { root: __dirname });
 });
-
-if (process.env.NODE_ENV !== 'test') {
-    app.listen(process.env.PORT || 3000, () => {
-        console.log(`Server is running on port ${process.env.PORT || 3000}`);
-    });
-}
 
 export default app;

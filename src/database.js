@@ -1,41 +1,97 @@
-import pkg from 'pg';
-const { Client } = pkg;
-import dotenv from 'dotenv';
+import { Sequelize, DataTypes } from 'sequelize';
 
-dotenv.config();
-
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
+// Create a new Sequelize instance for PostgreSQL
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  dialectOptions: {
     ssl: {
-        rejectUnauthorized: false
-    }
+      require: true,
+      rejectUnauthorized: false, // Required for Heroku
+    },
+  },
 });
 
-client.connect();
+// Define the Company model
+const Company = sequelize.define('company', {
+  cid: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+  },
+  logo: {
+    type: DataTypes.STRING,
+  },
+  views: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  likes: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+}, {
+  tableName: 'companies',
+  timestamps: false,
+});
 
-client.query(`
-    CREATE TABLE IF NOT EXISTS companies (
-        cid UUID PRIMARY KEY,
-        name TEXT,
-        logo TEXT,
-        views INTEGER DEFAULT 0,
-        likes INTEGER DEFAULT 0
-    );
-    
-    CREATE TABLE IF NOT EXISTS partnerships (
-        pid UUID PRIMARY KEY,
-        company_one UUID,
-        company_two UUID,
-        title TEXT,
-        desc TEXT,
-        link TEXT,
-        image TEXT,
-        tags TEXT,
-        views INTEGER DEFAULT 0,
-        likes INTEGER DEFAULT 0,
-        FOREIGN KEY (company_one) REFERENCES companies (cid),
-        FOREIGN KEY (company_two) REFERENCES companies (cid)
-    );
-`);
+// Define the Partnership model
+const Partnership = sequelize.define('partnership', {
+  pid: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+  },
+  company_one: {
+    type: DataTypes.STRING,
+    references: {
+      model: Company,
+      key: 'cid',
+    },
+  },
+  company_two: {
+    type: DataTypes.STRING,
+    references: {
+      model: Company,
+      key: 'cid',
+    },
+  },
+  title: {
+    type: DataTypes.STRING,
+  },
+  desc: {
+    type: DataTypes.TEXT,
+  },
+  link: {
+    type: DataTypes.STRING,
+  },
+  image: {
+    type: DataTypes.STRING,
+  },
+  tags: {
+    type: DataTypes.STRING,
+  },
+  views: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  likes: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+}, {
+  tableName: 'partnerships',
+  timestamps: false,
+});
 
-export default client;
+// Sync all models with the database
+sequelize.sync()
+  .then(() => {
+    console.log('Database & tables created!');
+  })
+  .catch((err) => {
+    console.error('Unable to create database:', err);
+  });
+
+export { sequelize, Company, Partnership };
