@@ -94,22 +94,22 @@
 		        fetchPartnerships();
 		    });
 
-		    function fetchPartnerships() {
-		        fetch('/partnerships')
-		            .then(response => {
-		                if (!response.ok) {
-		                    throw new Error(`HTTP error! status: ${response.status}`);
-		                }
-		                return response.json();
-		            })
-		            .then(data => {
-		                partnerships = data;
-		                displayPartnerships(data);
-		            })
-		            .catch(e => {
-		                console.error('An error occurred while fetching the partnerships data:', e);
-		            });
-		    }
+			function fetchPartnerships() {
+			    fetch('/partnerships')
+			        .then(response => {
+			            if (!response.ok) {
+			                throw new Error(`HTTP error! status: ${response.status}`);
+			            }
+			            return response.json();
+			        })
+			        .then(data => {
+			            partnerships = data.reverse(); // Reverse the array here
+			            displayPartnerships(partnerships);
+			        })
+			        .catch(e => {
+			            console.error('An error occurred while fetching the partnerships data:', e);
+			        });
+			}
 
 		    function displayPartnerships(partnerships) {
 		        const container = document.getElementById('partnership-container');
@@ -128,37 +128,37 @@
 		        });
 		    }
 
-		    function filterPartnerships(category) {
-		        const buttons = document.querySelectorAll('button');
-		        buttons.forEach(button => {
-		            if (button.textContent === category) {
-		                button.classList.add('tab-active');
-		            } else {
-		                button.classList.remove('tab-active');
-		            }
-		        });
+			function filterPartnerships(category) {
+			    const buttons = document.querySelectorAll('button');
+			    buttons.forEach(button => {
+			        if (button.textContent === category) {
+			            button.classList.add('tab-active');
+			        } else {
+			            button.classList.remove('tab-active');
+			        }
+			    });
 
-		        let query = '';
-		        if (category === 'Advanced TV') {
-		            query = '?tags=tv';
-		        } else if (category === 'Commerce') {
-		            query = '?tags=commerce';
-		        }
+			    let query = '';
+			    if (category === 'Advanced TV') {
+			        query = '?tags=tv';
+			    } else if (category === 'Commerce') {
+			        query = '?tags=commerce';
+			    }
 
-		        fetch(`/partnerships${query}`)
-		            .then(response => {
-		                if (!response.ok) {
-		                    throw new Error(`HTTP error! status: ${response.status}`);
-		                }
-		                return response.json();
-		            })
-		            .then(data => {
-		                displayPartnerships(data);
-		            })
-		            .catch(e => {
-		                console.error('An error occurred while fetching the partnerships data:', e);
-		            });
-		    }
+			    fetch(`/partnerships${query}`)
+			        .then(response => {
+			            if (!response.ok) {
+			                throw new Error(`HTTP error! status: ${response.status}`);
+			            }
+			            return response.json();
+			        })
+			        .then(data => {
+			            displayPartnerships(data.reverse()); // Reverse the array here
+			        })
+			        .catch(e => {
+			            console.error('An error occurred while fetching the partnerships data:', e);
+			        });
+			}
 
 		    function updateSearchResults(query) {
 		        const dropdown = document.getElementById('searchDropdown');
