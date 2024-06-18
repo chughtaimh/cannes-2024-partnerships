@@ -79,77 +79,78 @@
                 <!-- Partnership cards will be inserted here -->
             </div>
         </div>
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                fetchPartnerships();
-            });
+		<script>
+		    document.addEventListener('DOMContentLoaded', () => {
+		        fetchPartnerships();
+		    });
 
-            function fetchPartnerships() {
-                fetch('/partnership')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        displayPartnerships(data);
-                    })
-                    .catch(e => {
-                        console.error('An error occurred while fetching the partnerships data:', e);
-                    });
-            }
+		    function fetchPartnerships() {
+		        fetch('/partnerships')  // Changed from '/partnership' to '/partnerships'
+		            .then(response => {
+		                if (!response.ok) {
+		                    throw new Error(`HTTP error! status: ${response.status}`);
+		                }
+		                return response.json();
+		            })
+		            .then(data => {
+		                displayPartnerships(data);
+		            })
+		            .catch(e => {
+		                console.error('An error occurred while fetching the partnerships data:', e);
+		            });
+		    }
 
-            function displayPartnerships(partnerships) {
-                const container = document.getElementById('partnership-container');
-                container.innerHTML = '';
-                partnerships.forEach(partnership => {
-                    const card = document.createElement('div');
-                    card.className = 'partnership-card';
-                    card.innerHTML = `
-                        <div class="w-16 h-16 mb-4">
-                            <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full h-full object-cover rounded-full">
-                        </div>
-                        <p class="text-xs font-bold">${partnership.title}</p>
-                        <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
-                    `;
-                    container.appendChild(card);
-                });
-            }
+		    function displayPartnerships(partnerships) {
+		        const container = document.getElementById('partnership-container');
+		        container.innerHTML = '';
+		        partnerships.forEach(partnership => {
+		            const card = document.createElement('div');
+		            card.className = 'partnership-card';
+		            card.innerHTML = `
+		                <div class="w-16 h-16 mb-4">
+		                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full h-full object-cover rounded-full">
+		                </div>
+		                <p class="text-xs font-bold">${partnership.title}</p>
+		                <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
+		            `;
+		            container.appendChild(card);
+		        });
+		    }
 
-			function filterPartnerships(category) {
-			    const buttons = document.querySelectorAll('button');
-			    buttons.forEach(button => {
-			        if (button.textContent === category) {
-			            button.classList.add('tab-active');
-			        } else {
-			            button.classList.remove('tab-active');
-			        }
-			    });
+		    function filterPartnerships(category) {
+		        const buttons = document.querySelectorAll('button');
+		        buttons.forEach(button => {
+		            if (button.textContent === category) {
+		                button.classList.add('tab-active');
+		            } else {
+		                button.classList.remove('tab-active');
+		            }
+		        });
 
-			    let query = '';
-			    if (category === 'Advanced TV') {
-			        query = '?tags=tv';
-			    } else if (category === 'Commerce') {
-			        query = '?tags=commerce';
-			    }
+		        let query = '';
+		        if (category === 'Advanced TV') {
+		            query = '?tags=tv';
+		        } else if (category === 'Commerce') {
+		            query = '?tags=commerce';
+		        }
 
-			    fetch(`/partnership${query}`)
-			        .then(response => {
-			            if (!response.ok) {
-			                throw new Error(`HTTP error! status: ${response.status}`);
-			            }
-			            return response.json();
-			        })
-			        .then(data => {
-			            displayPartnerships(data);
-			        })
-			        .catch(e => {
-			            console.error('An error occurred while fetching the partnerships data:', e);
-			        });
-			}
+		        fetch(`/partnerships${query}`)  // Changed from '/partnership' to '/partnerships'
+		            .then(response => {
+		                if (!response.ok) {
+		                    throw new Error(`HTTP error! status: ${response.status}`);
+		                }
+		                return response.json();
+		            })
+		            .then(data => {
+		                displayPartnerships(data);
+		            })
+		            .catch(e => {
+		                console.error('An error occurred while fetching the partnerships data:', e);
+		            });
+		    }
+		</script>
 
-        </script>
+
         <div class="mt-8 text-center">
             <div class="submit-button" onclick="showForm()">SUBMIT NEW PARTNERSHIP</div>
         </div>
