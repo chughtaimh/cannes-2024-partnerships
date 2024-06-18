@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
-    "test": "NODE_ENV=test mocha --exit"
+    "test": "NODE_ENV=test mocha --exit",
+    "sequelize": "sequelize",
+    "db:migrate": "sequelize db:migrate"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
