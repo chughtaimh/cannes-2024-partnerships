@@ -72,10 +72,10 @@
             </div>
         </header>
         <div class="mt-4 flex-grow">
-            <div class="relative">
-                <input type="text" placeholder="Search Partnerships..." class="w-full p-3 border border-gray-300 rounded-lg">
-                <span class="absolute right-3 top-3 text-gray-500">🔎</span>
-            </div>
+			<div class="relative">
+			    <input type="text" id="searchInput" placeholder="Search Partnerships..." class="w-full p-3 border border-gray-300 rounded-lg" oninput="updateSearchResults(this.value)">
+			    <div id="searchDropdown" class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 z-10 hidden"></div>
+			</div>
 			<div class="mt-4 flex space-x-4">
 			    <button class="tab-active px-4 py-2" onclick="filterPartnerships('All')">All</button>
 			    <button class="px-4 py-2" onclick="filterPartnerships('Advanced TV')">Advanced TV</button>
@@ -86,12 +86,14 @@
             </div>
         </div>
 		<script>
+		    let partnerships = [];
+
 		    document.addEventListener('DOMContentLoaded', () => {
 		        fetchPartnerships();
 		    });
 
 		    function fetchPartnerships() {
-		        fetch('/partnerships')  // Changed from '/partnership' to '/partnerships'
+		        fetch('/partnerships')
 		            .then(response => {
 		                if (!response.ok) {
 		                    throw new Error(`HTTP error! status: ${response.status}`);
@@ -99,11 +101,58 @@
 		                return response.json();
 		            })
 		            .then(data => {
+		                partnerships = data;
 		                displayPartnerships(data);
 		            })
 		            .catch(e => {
 		                console.error('An error occurred while fetching the partnerships data:', e);
 		            });
+		    }
+
+		    function updateSearchResults(query) {
+		        const dropdown = document.getElementById('searchDropdown');
+		        if (query.length === 0) {
+		            dropdown.classList.add('hidden');
+		            return;
+		        }
+
+		        const matchingPartnerships = partnerships.filter(p => p.desc.toLowerCase().includes(query.toLowerCase()));
+		        dropdown.innerHTML = '';
+		        
+		        if (matchingPartnerships.length > 0) {
+		            matchingPartnerships.forEach(partnership => {
+		                const item = document.createElement('div');
+		                item.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+		                item.textContent = partnership.title;
+		                item.onclick = () => {
+		                    document.getElementById('searchInput').value = partnership.title;
+		                    filterPartnershipsById(partnership.id);
+		                    dropdown.classList.add('hidden');
+		                };
+		                dropdown.appendChild(item);
+		            });
+		            dropdown.classList.remove('hidden');
+		        } else {
+		            dropdown.classList.add('hidden');
+		        }
+		    }
+
+		    function filterPartnershipsById(id) {
+		        const container = document.getElementById('partnership-container');
+		        container.innerHTML = '';
+		        const partnership = partnerships.find(p => p.id === id);
+		        if (partnership) {
+		            const card = document.createElement('div');
+		            card.className = 'partnership-card';
+		            card.innerHTML = `
+		                <div class="w-full h-16 mb-4">
+		                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full h-full object-cover">
+		                </div>
+		                <p class="text-xs font-bold">${partnership.title}</p>
+		                <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
+		            `;
+		            container.appendChild(card);
+		        }
 		    }
 
 		    function displayPartnerships(partnerships) {
@@ -113,48 +162,17 @@
 		            const card = document.createElement('div');
 		            card.className = 'partnership-card';
 		            card.innerHTML = `
-			            <div class="w-full h-16 mb-4">
-			                <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
-			            </div>
-			            <p class="text-xs font-bold">${partnership.title}</p>
-			            <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
+		                <div class="w-full h-16 mb-4">
+		                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full h-full object-cover">
+		                </div>
+		                <p class="text-xs font-bold">${partnership.title}</p>
+		                <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
 		            `;
 		            container.appendChild(card);
 		        });
 		    }
-
-		    function filterPartnerships(category) {
-		        const buttons = document.querySelectorAll('button');
-		        buttons.forEach(button => {
-		            if (button.textContent === category) {
-		                button.classList.add('tab-active');
-		            } else {
-		                button.classList.remove('tab-active');
-		            }
-		        });
-
-		        let query = '';
-		        if (category === 'Advanced TV') {
-		            query = '?tags=tv';
-		        } else if (category === 'Commerce') {
-		            query = '?tags=commerce';
-		        }
-
-		        fetch(`/partnerships${query}`)  // Changed from '/partnership' to '/partnerships'
-		            .then(response => {
-		                if (!response.ok) {
-		                    throw new Error(`HTTP error! status: ${response.status}`);
-		                }
-		                return response.json();
-		            })
-		            .then(data => {
-		                displayPartnerships(data);
-		            })
-		            .catch(e => {
-		                console.error('An error occurred while fetching the partnerships data:', e);
-		            });
-		    }
 		</script>
+
 
 
         <div class="mt-8 text-center">
