@@ -2,7 +2,10 @@ import express from 'express';
 import { sequelize } from './database.js';
 import companyRoutes from './routes/companies.js';
 import partnershipRoutes from './routes/partnerships.js';
-import fetchArticleDetailsRoute from './routes/fetchArticleDetails.js'; // Added this line
+import fetchArticleDetailsRoute from './routes/fetchArticleDetails.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -10,7 +13,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use('/companies', companyRoutes); 
 app.use('/partnerships', partnershipRoutes);
-app.use('/fetch-article-details', fetchArticleDetailsRoute); // Added this line
+app.use('/fetch-article-details', fetchArticleDetailsRoute);
 
 // Sync all models with the database
 sequelize.sync()
