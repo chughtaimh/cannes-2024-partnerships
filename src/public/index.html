@@ -188,51 +188,51 @@
 			        });
 			}
 
-		    function updateSearchResults(query) {
-		        const dropdown = document.getElementById('searchDropdown');
-		        if (query.length === 0) {
-		            dropdown.classList.add('hidden');
-		            return;
-		        }
+			function updateSearchResults(query) {
+			    const dropdown = document.getElementById('searchDropdown');
+			    if (query.length === 0) {
+			        dropdown.classList.add('hidden');
+			        return;
+			    }
 
-		        const matchingPartnerships = partnerships.filter(p => p.desc.toLowerCase().includes(query.toLowerCase()));
-		        dropdown.innerHTML = '';
-		        
-		        if (matchingPartnerships.length > 0) {
-		            matchingPartnerships.forEach(partnership => {
-		                const item = document.createElement('div');
-		                item.className = 'p-2 hover:bg-gray-100 cursor-pointer';
-		                item.textContent = partnership.title;
-		                item.onclick = () => {
-		                    document.getElementById('searchInput').value = partnership.title;
-		                    filterPartnershipsById(partnership.id);
-		                    dropdown.classList.add('hidden');
-		                };
-		                dropdown.appendChild(item);
-		            });
-		            dropdown.classList.remove('hidden');
-		        } else {
-		            dropdown.classList.add('hidden');
-		        }
-		    }
+			    const matchingPartnerships = partnerships.filter(p => p.desc.toLowerCase().includes(query.toLowerCase()));
+			    dropdown.innerHTML = '';
 
-		    function filterPartnershipsById(id) {
-		        const container = document.getElementById('partnership-container');
-		        container.innerHTML = '';
-		        const partnership = partnerships.find(p => p.id === id);
-		        if (partnership) {
-		            const card = document.createElement('div');
-		            card.className = 'partnership-card';
-		            card.innerHTML = `
-		                <div class="w-full h-16 mb-4">
-		                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
-		                </div>
-		                <p class="text-xs font-bold">${partnership.title}</p>
-		                <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
-		            `;
-		            container.appendChild(card);
-		        }
-		    }
+			    if (matchingPartnerships.length > 0) {
+			        matchingPartnerships.forEach(partnership => {
+			            const item = document.createElement('div');
+			            item.className = 'p-2 hover:bg-gray-100 cursor-pointer';
+			            item.textContent = partnership.title;
+			            item.onclick = () => {
+			                document.getElementById('searchInput').value = partnership.title;
+			                filterPartnershipsById(partnership.pid);
+			                dropdown.classList.add('hidden');
+			            };
+			            dropdown.appendChild(item);
+			        });
+			        dropdown.classList.remove('hidden');
+			    } else {
+			        dropdown.classList.add('hidden');
+			    }
+			}
+
+			function filterPartnershipsById(pid) {
+			    const container = document.getElementById('partnership-container');
+			    container.innerHTML = '';
+			    const partnership = partnerships.find(p => p.pid === pid);
+			    if (partnership) {
+			        const card = document.createElement('div');
+			        card.className = 'partnership-card';
+			        card.innerHTML = `
+			            <div class="w-full h-16 mb-4">
+			                <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
+			            </div>
+			            <p class="text-xs font-bold">${partnership.title}</p>
+			            <a href="${partnership.link}" target="_blank" onclick="incrementLikes('${partnership.pid}')"><button class="mt-4 text-blue-500">Learn more</button></a>
+			        `;
+			        container.appendChild(card);
+			    }
+			}
 		</script>
 		<!-- POPUP: ADD PARTNERSHIP -->
 		<div id="popupModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center hidden">
