@@ -2,6 +2,7 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { Partnership } from '../database.js';
 
+const Sequelize = require('sequelize');
 const router = express.Router();
 
 // Get all partnerships or a specific partnership by ID
