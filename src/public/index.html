@@ -111,22 +111,22 @@
 			        });
 			}
 
-		    function displayPartnerships(partnerships) {
-		        const container = document.getElementById('partnership-container');
-		        container.innerHTML = '';
-		        partnerships.forEach(partnership => {
-		            const card = document.createElement('div');
-		            card.className = 'partnership-card';
-		            card.innerHTML = `
-		                <div class="w-full h-16 mb-4">
-		                    <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
-		                </div>
-		                <p class="text-xs font-bold">${partnership.title}</p>
-		                <a href="${partnership.link}" target="_blank"><button class="mt-4 text-blue-500">Learn more</button></a>
-		            `;
-		            container.appendChild(card);
-		        });
-		    }
+			function displayPartnerships(partnerships) {
+			    const container = document.getElementById('partnership-container');
+			    container.innerHTML = '';
+			    partnerships.forEach(partnership => {
+			        const card = document.createElement('div');
+			        card.className = 'partnership-card';
+			        card.innerHTML = `
+			            <div class="w-full h-16 mb-4">
+			                <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
+			            </div>
+			            <p class="text-xs font-bold">${partnership.title}</p>
+			            <a href="${partnership.link}" target="_blank" onclick="incrementLikes('${partnership.pid}')"><button class="mt-4 text-blue-500">Learn more</button></a>
+			        `;
+			        container.appendChild(card);
+			    });
+			}
 
 			function filterPartnerships(category) {
 			    const buttons = document.querySelectorAll('button');
