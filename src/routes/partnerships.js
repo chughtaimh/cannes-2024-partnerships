@@ -35,26 +35,47 @@ router.get('/:id?', async (req, res) => {
     }
 });
 
-// Create a new partnership
 router.post('/', async (req, res) => {
-    const { company_one, company_two, title, desc, link, image, tags } = req.body;
+    const { company_one, company_two, title, desc, link, image, tags, date } = req.body; // include date if provided
     const pid = uuidv4();
     try {
-        const newPartnership = await Partnership.create({ pid, company_one, company_two, title, desc, link, image: image || '/src/images/logo.jpeg', tags: tags || '', views: 0, likes: 0 });
+        const newPartnership = await Partnership.create({
+            pid,
+            company_one,
+            company_two,
+            title,
+            desc,
+            link,
+            image: image || '/src/images/logo.jpeg',
+            tags: tags || '',
+            views: 0,
+            likes: 0,
+            date: date || new Date() // use provided date or default to now
+        });
         res.status(201).json(newPartnership);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-// Update an existing partnership by ID
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { company_one, company_two, title, desc, link, image, tags, views, likes } = req.body;
+    const { company_one, company_two, title, desc, link, image, tags, views, likes, date } = req.body;
     try {
         const partnership = await Partnership.findByPk(id);
         if (partnership) {
-            await partnership.update({ company_one, company_two, title, desc, link, image, tags, views, likes });
+            await partnership.update({
+                company_one,
+                company_two,
+                title,
+                desc,
+                link,
+                image,
+                tags,
+                views,
+                likes,
+                date // update date if provided
+            });
             res.status(200).json({ message: 'Partnership updated successfully' });
         } else {
             res.status(404).json({ error: 'Partnership not found' });

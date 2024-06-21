@@ -93,6 +93,10 @@ const Partnership = sequelize.define('partnership', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  date: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 }, {
   tableName: 'partnerships',
   timestamps: false,
