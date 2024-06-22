@@ -76,6 +76,17 @@
             font-weight: bold;
             height: 75px;
         }
+	    .new-flag {
+	        background-color: #ff0000;
+	        color: #fff;
+	        padding: 2px 8px;
+	        border-radius: 4px;
+	        font-size: 0.75rem;
+	        font-weight: bold;
+	        position: absolute;
+	        top: 8px;
+	        right: 8px;
+	    }
     </style>
     <!-- Google tag (gtag.js) -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-L9NCZ69PW3"></script>
@@ -121,6 +132,14 @@
 		        fetchPartnerships();
 		    });
 
+			function isNewPartnership(dateString) {
+			    const partnershipDate = new Date(dateString);
+			    const now = new Date();
+			    const diffInMs = now - partnershipDate;
+			    const diffInHours = diffInMs / (1000 * 60 * 60);
+			    return diffInHours <= 48; // 48 hours
+			}
+
 			function fetchPartnerships() {
 			    fetch('/partnerships')
 			        .then(response => {
@@ -130,7 +149,15 @@
 			            return response.json();
 			        })
 			        .then(data => {
-			            partnerships = data.reverse(); // Reverse the array here
+			            // Sort partnerships: new first, then by likes
+			            partnerships = data.sort((a, b) => {
+			                const isNewA = isNewPartnership(a.date);
+			                const isNewB = isNewPartnership(b.date);
+
+			                if (isNewA && !isNewB) return -1;
+			                if (!isNewA && isNewB) return 1;
+			                return b.likes - a.likes;
+			            });
 			            displayPartnerships(partnerships);
 			        })
 			        .catch(e => {
@@ -144,9 +171,12 @@
 			    partnerships.forEach(partnership => {
 			        const card = document.createElement('div');
 			        card.className = 'partnership-card';
+			        
+			        const isNew = isNewPartnership(partnership.date);
 			        card.innerHTML = `
-			            <div class="w-full h-16 mb-2">
+			            <div class="relative w-full h-16 mb-2">
 			                <img src="${partnership.image || '/images/logo.jpeg'}" alt="Partnership Image" class="w-full object-cover">
+			                ${isNew ? '<div class="new-flag">NEW</div>' : ''}
 			            </div>
 			            <p class="text-xs font-bold">${partnership.title}</p>
 			            <div class="flex justify-between items-center w-full">
