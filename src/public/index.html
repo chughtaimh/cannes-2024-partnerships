@@ -112,9 +112,9 @@
             </div>
         </header>
         <div class="mt-4 flex-grow">
-			<div class="relative">
-			    <input type="text" id="searchInput" placeholder="Search Partnerships..." class="w-full p-3 border border-gray-300 rounded-lg" oninput="updateSearchResults(this.value)">
-			    <div id="searchDropdown" class="absolute w-full bg-white border border-gray-300 rounded-lg mt-1 z-10 hidden"></div>
+			<div class="relative mt-4">
+			    <input type="text" id="searchInput" placeholder="Search Partnerships..." class="w-full p-4 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="updateSearchResults(this.value)">
+			    <div id="searchDropdown" class="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 shadow-lg z-20 hidden"></div>
 			</div>
 			<div class="mt-4 flex space-x-4">
 			    <button class="tab-active px-4 py-2" onclick="filterPartnerships('All')">All</button>
