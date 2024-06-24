@@ -6,11 +6,13 @@
     <title>Cannes 2024 Partnership Tracker</title>
     <link rel="icon" type="image/png" href="/images/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         body {
-		    font-family: 'Roboto', sans-serif;
-		    transition: background-color 0.3s, color 0.3s;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
         }
 		.header, .tab-active, .submit-button {
 		    transition: background-color 0.3s, color 0.3s;
@@ -51,21 +53,21 @@
             border-bottom: 2px solid #000;
         }
 		.partnership-card {
-		    border: 1px solid #e5e7eb;
-		    border-radius: 8px;
-		    padding: 20px; /* Adjust padding for better spacing */
-		    background-color: #fff;
-		    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
-		    transition: transform 0.2s; /* Smooth hover effect */
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
 		}
 		.partnership-card:hover {
 		    transform: translateY(-5px); /* Lift the card slightly on hover */
 		}
 		.partnership-card img {
-		    width: calc(100% - 32px); /* Full width with some margin */
-		    height: 50px; /* Maintain aspect ratio */
-		    margin: 0 16px; /* Margin on each side */
-		    border-radius: 8px; /* Slightly rounded corners, you can adjust this */
+            width: calc(100% - 32px);
+            height: 60px;
+            margin: 0 16px;
+            border-radius: 8px;
 		}
 	    .partnership-card .flex.items-center {
 	        width: calc(100% - 32px); /* Full width with some margin */
